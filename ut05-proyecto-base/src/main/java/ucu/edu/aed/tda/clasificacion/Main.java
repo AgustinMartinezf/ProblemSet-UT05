@@ -7,12 +7,22 @@ public class Main {
         int[] vectorAscendente = gdg.generarDatosAscendentes();
         int[] vectorDescendente = gdg.generarDatosDescendentes();
 
-        TClasificador clasificador = null; // TODO instanciar con implementación
+        TClasificadorImpl clasificador = new TClasificadorImpl();
+        //ejercicio5
+        int[] ejercicio5 = {256,458,365,298,43,648,778,621,655,19,124,847};
+        clasificador.insercionDirectaPasos(ejercicio5);
+        //ejercicio9
+        int [] ejercicio9 ={256,458,365,298,43,648,778,621,655,19,124,847};
+        Integer[] incrementos = {4,2,1};
+        clasificador.shellConPasos(ejercicio9,incrementos);
+        //ejercicio15
+        int [] ejercicio15 ={256,458,365,298,43,648,778,621,655,19,124,847};
+        clasificador.clasificacionDirectaConPasos(ejercicio15);
 
+        /* 
         clasificador.insercionDirecta(vectorAleatorio);
         clasificador.insercionDirecta(vectorAscendente);
         clasificador.insercionDirecta(vectorDescendente);
-
         for (int value : vectorAleatorio) {
             System.out.print(value + " ");
         }
@@ -25,6 +35,7 @@ public class Main {
         for (int j : vectorDescendente) {
             System.out.print(j + " ");
         }
+        */
 
     }
 }
