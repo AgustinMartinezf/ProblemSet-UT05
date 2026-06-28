@@ -1,14 +1,6 @@
 # Problem Set UT05 — Ordenación
 
-Ejercicios entregables 23, 24 y 25 (resueltos de forma teórica).
-
----
-
 ## Ejercicio 23 — Tabla comparativa de métodos
-
-Para cada algoritmo se indica la estrategia que usa, su orden de ejecución en el
-mejor y peor caso, la memoria auxiliar que necesita y el tipo de datos para el que
-conviene usarlo.
 
 | Algoritmo | Estrategia | Mejor caso | Peor caso | Memoria auxiliar | Tipo de datos recomendado |
 |---|---|---|---|---|---|
@@ -21,15 +13,6 @@ conviene usarlo.
 | **Cuenta por distribución** | Distribución: cuenta cuántas veces aparece cada clave | O(n + k) | O(n + k) | O(n + k) | Claves enteras en un rango chico y conocido (k = rango) |
 | **Radix sort** | Distribución por dígitos (de menos a más significativo) | O(d·(n + b)) | O(d·(n + b)) | O(n + b) | Claves enteras o cadenas de largo fijo (d = dígitos, b = base) |
 
-**Notas:**
-- O(1) "in place" significa que ordenan dentro del mismo vector, sin pedir memoria
-  extra que dependa de n.
-- En cuenta por distribución y Radix, `k` es el rango de las claves y `b` la base
-  (cantidad de "cajones"). Por eso son lineales pero solo sirven para claves enteras
-  acotadas.
-- Cuenta por distribución y Radix son **estables** (mantienen el orden relativo de
-  claves repetidas); Quicksort y Heapsort, tal como se ven habitualmente, no.
-
 ---
 
 ## Ejercicio 24 — Elección de algoritmo según contexto
@@ -37,7 +20,7 @@ conviene usarlo.
 **a) Vector pequeño de 20 elementos casi ordenado → Inserción directa.**
 Con pocos datos y casi ordenados, inserción directa trabaja prácticamente en O(n):
 casi no hace movimientos porque cada elemento ya está cerca de su lugar. Además es
-muy simple y tiene poco "costo fijo" (overhead), así que para 20 elementos es más
+muy simple y tiene poco overhead, así que para 20 elementos es más
 rápido en la práctica que cualquier algoritmo sofisticado.
 
 **b) Vector de 1.000.000 de elementos en memoria → Quicksort (o Heapsort).**
@@ -97,6 +80,3 @@ y la idea de elegir el algoritmo adecuado según el contexto. Sus límites teór
    la mediana es el elemento del medio, el mínimo y el máximo están en los extremos y
    cualquier percentil es un acceso directo por índice.
 
-(Otros ejemplos: unir/intersectar dos conjuntos recorriéndolos en paralelo, algoritmos
-de compresión, y procesos de clasificación externa donde se ordenan bloques antes de
-mezclarlos.)
