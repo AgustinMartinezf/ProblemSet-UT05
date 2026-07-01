@@ -153,14 +153,64 @@ public class TClasificadorImpl extends TClasificador{
 
     @Override
     protected int obtenerPivote(int[] datos, int i, int j) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'obtenerPivote'");
+        //busco los dos primeros elementos DIFERENTES del rango [i, j]
+        //el primero siempre es datos[i]
+        int k = i + 1;
+        while (k <= j && datos[k] == datos[i]) {
+            //salteo los que son iguales al primero
+            k++;
+        }
+        //si son todos iguales no hay pivote válido
+        if (k > j) {
+            return -1;
+        }
+        //devuelvo el índice del MAYOR de esos dos elementos diferentes
+        return datos[i] > datos[k] ? i : k;
     }
 
     @Override
     protected int particion(int[] datos, int i, int j, int pivote) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'particion'");
+        //dejo a la izquierda los menores al pivote
+        //y a la derecha los mayores o iguales
+        while (i <= j) {
+            //avanzo desde la izquierda mientras sean menores
+            while (datos[i] < pivote) {
+                i++;
+            }
+            //retrocedo desde la derecha mientras sean mayores
+            while (datos[j] > pivote) {
+                j--;
+            }
+            if (i <= j) {
+                intercambiar(datos, i, j);
+                i++;
+                j--;
+            }
+        }
+        //i queda como el punto de corte entre las dos particiones
+        return i;
+    }
+
+    public void quicksortConPasos(int[] datos) {
+        System.out.println("Inicial: " + Arrays.toString(datos));
+        quicksortConPasos(datos, 0, datos.length - 1);
+        System.out.println("\nRESULTADO FINAL");
+        System.out.println("Arreglo: " + Arrays.toString(datos));
+    }
+
+    private void quicksortConPasos(int[] datos, int i, int j) {
+        if (i < j) {
+            int indicePivote = obtenerPivote(datos, i, j);
+            //debe ser un rango válido
+            if (indicePivote >= i && indicePivote < j) {
+                int pivote = datos[indicePivote];
+                int k = particion(datos, i, j, pivote);
+                System.out.println("Partición en [" + i + ", " + j + "] con pivote "
+                        + pivote + ": " + Arrays.toString(datos) + "  (corte en " + k + ")");
+                quicksortConPasos(datos, i, k - 1);
+                quicksortConPasos(datos, k, j);
+            }
+        }
     }
 
     @Override
@@ -220,14 +270,128 @@ public class TClasificadorImpl extends TClasificador{
 
     @Override
     public void heapsort(int[] datos) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'heapsort'");
+        int n = datos.length;
+        //1) construyo el heap máximo de abajo hacia arriba
+        //empiezo en el último nodo que tiene hijos
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            desplazaElemento(datos, i, n - 1);
+        }
+        //2) extraigo la raíz (el máximo) una y otra vez
+        for (int ultimo = n - 1; ultimo > 0; ultimo--) {
+            //la raíz es el mayor, la mando al final
+            intercambiar(datos, 0, ultimo);
+            //reacomodo el heap sin contar la parte ya ordenada
+            desplazaElemento(datos, 0, ultimo - 1);
+        }
     }
 
     @Override
     protected void desplazaElemento(int[] datos, int primero, int ultimo) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'desplazaElemento'");
+        int padre = primero;
+        int hijo = 2 * padre + 1; //hijo izquierdo (vector base 0)
+        //mientras el padre tenga al menos un hijo dentro del heap
+        while (hijo <= ultimo) {
+            //si existe el hijo derecho y es mayor, me quedo con ese
+            if (hijo < ultimo && datos[hijo] < datos[hijo + 1]) {
+                hijo++;
+            }
+            //si el padre ya es mayor o igual que el hijo mayor, terminé
+            if (datos[padre] >= datos[hijo]) {
+                break;
+            }
+            //si no, bajo el padre e sigo desplazando hacia abajo
+            intercambiar(datos, padre, hijo);
+            padre = hijo;
+            hijo = 2 * padre + 1;
+        }
     }
-    
+
+    public void heapsortConPasos(int[] datos) {
+        int n = datos.length;
+        System.out.println("Inicial: " + Arrays.toString(datos));
+        //construcción del heap máximo
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            desplazaElemento(datos, i, n - 1);
+        }
+        System.out.println("Heap inicial construido: " + Arrays.toString(datos));
+        System.out.println();
+        //extracciones sucesivas de la raíz
+        for (int ultimo = n - 1; ultimo > 0; ultimo--) {
+            intercambiar(datos, 0, ultimo);
+            desplazaElemento(datos, 0, ultimo - 1);
+            System.out.println("Tras extraer la raíz a la posición " + ultimo
+                    + ": " + Arrays.toString(datos));
+        }
+        System.out.println("\nRESULTADO FINAL");
+        System.out.println("Arreglo: " + Arrays.toString(datos));
+    }
+
+    public void cuentaPorDistribucion(int[] datos) {
+        int n = datos.length;
+        int max = 0;
+        for (int v : datos) {
+            if (v > max) max = v;
+        }
+        //conteo de apariciones de cada clave
+        int[] conteo = new int[max + 1];
+        for (int v : datos) {
+            conteo[v]++;
+        }
+        //acumulo para saber la posición final de cada clave
+        for (int i = 1; i < conteo.length; i++) {
+            conteo[i] += conteo[i - 1];
+        }
+        //recorro desde el final para que el método sea estable
+        int[] salida = new int[n];
+        for (int i = n - 1; i >= 0; i--) {
+            int v = datos[i];
+            conteo[v]--;
+            salida[conteo[v]] = v;
+        }
+        System.arraycopy(salida, 0, datos, 0, n);
+    }
+
+    public void cuentaPorDistribucionConPasos(int[] datos) {
+        int n = datos.length;
+        System.out.println("Inicial: " + Arrays.toString(datos));
+        int max = 0;
+        for (int v : datos) {
+            if (v > max) max = v;
+        }
+        //1) tabla de conteo: cuántas veces aparece cada clave
+        int[] conteo = new int[max + 1];
+        for (int v : datos) {
+            conteo[v]++;
+        }
+        System.out.println("\nTabla de conteo (cuántas veces aparece cada clave):");
+        imprimirTablaDistribucion(conteo);
+        //2) tabla acumulada: posición final de cada clave
+        for (int i = 1; i < conteo.length; i++) {
+            conteo[i] += conteo[i - 1];
+        }
+        System.out.println("\nTabla acumulada (última posición + 1 de cada clave):");
+        imprimirTablaDistribucion(conteo);
+        //3) reconstruyo el vector ordenado (recorriendo desde el final = estable)
+        int[] salida = new int[n];
+        for (int i = n - 1; i >= 0; i--) {
+            int v = datos[i];
+            conteo[v]--;
+            salida[conteo[v]] = v;
+        }
+        System.arraycopy(salida, 0, datos, 0, n);
+        System.out.println("\nRESULTADO FINAL");
+        System.out.println("Arreglo: " + Arrays.toString(datos));
+    }
+
+    private void imprimirTablaDistribucion(int[] tabla) {
+        StringBuilder claves = new StringBuilder("Clave:  ");
+        StringBuilder valores = new StringBuilder("Valor:  ");
+        for (int i = 0; i < tabla.length; i++) {
+            claves.append(String.format("%3d", i));
+            valores.append(String.format("%3d", tabla[i]));
+        }
+        System.out.println(claves);
+        System.out.println(valores);
+    }
+
 }
